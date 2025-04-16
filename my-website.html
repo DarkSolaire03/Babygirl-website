@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Clickable Message</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0; /* Light grey background */
+        }
+
+        #container {
+            text-align: center;
+        }
+
+        #goButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #goButton:hover {
+            background-color: #367c39; /* Darker green */
+        }
+
+        #message {
+            color: purple;
+            font-size: 24px;
+            margin-top: 20px;
+            display: none; /* Initially hidden */
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <button id="goButton">Go</button>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        const goButton = document.getElementById("goButton");
+        const message = document.getElementById("message");
+
+        goButton.addEventListener("click", function() {
+            message.textContent = "i love you babygirl";
+            message.style.display = "block"; // Show the message
+        });
+    </script>
+</body>
+</html>
