@@ -1,59 +1,113 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Simple Clickable Message</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0; /* Light grey background */
-        }
-
-        #container {
-            text-align: center;
-        }
-
-        #goButton {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #4CAF50; /* Green */
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        #goButton:hover {
-            background-color: #367c39; /* Darker green */
-        }
-
-        #message {
-            color: purple;
-            font-size: 24px;
-            margin-top: 20px;
-            display: none; /* Initially hidden */
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You, Babygirl &hearts;</title>
+<meta name="description" content="A little interactive 'i love you' note for babygirl. Tap the button for a message.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; font-family: 'Quicksand', system-ui, sans-serif; color: #5b2a4a; background: linear-gradient(135deg, #ffe0ec 0%, #ffc2d9 30%, #e7c6ff 65%, #c8b6ff 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 18px; overflow-x: hidden; }
+.hearts { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+.heart { position: absolute; bottom: -40px; opacity: .55; animation: floatUp linear infinite; user-select: none; }
+@keyframes floatUp { from { transform: translateY(0) rotate(0deg); opacity: 0; } 10% { opacity: .55; } to { transform: translateY(-110vh) rotate(28deg); opacity: 0; } }
+.card { position: relative; z-index: 1; max-width: 640px; width: 100%; text-align: center; background: rgba(255,255,255,.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,.85); border-radius: 28px; padding: 44px 34px 36px; box-shadow: 0 24px 60px rgba(180, 60, 120, .25); }
+.eyebrow { letter-spacing: .28em; text-transform: uppercase; font-size: 12px; font-weight: 700; color: #b23a6d; margin: 0 0 10px; }
+h1 { font-family: 'Great Vibes', cursive; font-weight: 400; font-size: clamp(44px, 8vw, 68px); line-height: 1.05; margin: 0 0 12px; color: #8e2a63; }
+.intro { font-size: 17px; line-height: 1.65; margin: 0 auto 28px; max-width: 460px; color: #6d3a58; }
+#goButton { appearance: none; border: none; cursor: pointer; font-family: 'Quicksand', sans-serif; font-size: 19px; font-weight: 700; color: #fff; padding: 16px 34px; border-radius: 999px; background: linear-gradient(135deg, #ff5e8a, #d6336c 55%, #9d4edd); box-shadow: 0 12px 28px rgba(214, 51, 108, .45); transition: transform .2s ease, box-shadow .2s ease; }
+#goButton:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 16px 34px rgba(214, 51, 108, .5); }
+#goButton:active { transform: scale(.97); }
+#message { display: none; font-family: 'Great Vibes', cursive; font-size: clamp(46px, 9vw, 76px); line-height: 1.1; color: #a4133c; margin: 30px 0 6px; }
+#message.show { display: block; animation: reveal .9s ease both; }
+@keyframes reveal { from { opacity: 0; transform: scale(.82) translateY(14px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.forever { display: none; font-size: 15px; letter-spacing: .18em; text-transform: uppercase; color: #8e2a63; margin: 0 0 22px; }
+.forever.show { display: block; animation: reveal .9s .25s ease both; }
+.notes { display: none; grid-template-columns: 1fr; gap: 12px; margin-top: 8px; }
+.notes.show { display: grid; animation: reveal .9s .45s ease both; }
+@media (min-width: 560px) { .notes { grid-template-columns: repeat(3, 1fr); } }
+.note { background: rgba(255,255,255,.88); border: 1px solid #ffd6e8; border-radius: 16px; padding: 16px 14px; font-size: 14.5px; line-height: 1.5; }
+.note span { display: block; font-size: 22px; margin-bottom: 6px; }
+#againButton { display: none; margin: 24px auto 0; border: 1px solid #ffb3c9; background: #fff; color: #b23a6d; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 14px; padding: 10px 20px; border-radius: 999px; cursor: pointer; }
+#againButton.show { display: inline-block; animation: reveal .6s .6s ease both; }
+.burst-heart { position: fixed; z-index: 5; pointer-events: none; font-size: 22px; animation: burst 1s ease-out forwards; }
+@keyframes burst { from { opacity: 1; transform: translate(0,0) scale(1); } to { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1.6); } }
+footer { position: relative; z-index: 1; margin-top: 22px; font-size: 13.5px; color: rgba(91,42,74,.75); text-align: center; }
+</style>
 </head>
 <body>
-    <div id="container">
-        <button id="goButton">Go</button>
-        <p id="message"></p>
-    </div>
-
-    <script>
-        const goButton = document.getElementById("goButton");
-        const message = document.getElementById("message");
-
-        goButton.addEventListener("click", function() {
-            message.textContent = "i love you babygirl";
-            message.style.display = "block"; // Show the message
-        });
-    </script>
+<div class="hearts" id="hearts" aria-hidden="true"></div>
+<main class="card">
+<p class="eyebrow">A little note &bull; just for you</p>
+<h1>For you, babygirl</h1>
+<p class="intro">I made you something small &mdash; no reason, no occasion, just because you make everything a little brighter.</p>
+<button id="goButton" type="button">For you &hearts;</button>
+<p id="message" aria-live="polite"></p>
+<p class="forever" id="forever">&mdash; forever &amp; always &mdash;</p>
+<div class="notes" id="notes">
+<div class="note"><span>&hearts;</span>You make ordinary days better.</div>
+<div class="note"><span>&#128522;</span>Your smile is my favorite thing.</div>
+<div class="note"><span>&#10024;</span>Every love story is beautiful, but ours is my favorite.</div>
+</div>
+<button id="againButton" type="button">&hearts; Show it again</button>
+</main>
+<footer>Made with &hearts; by DarkSolaire03</footer>
+<script>
+const goButton = document.getElementById('goButton');
+const message = document.getElementById('message');
+const forever = document.getElementById('forever');
+const notes = document.getElementById('notes');
+const againButton = document.getElementById('againButton');
+const heartsBox = document.getElementById('hearts');
+function makeHeart() {
+  const h = document.createElement('span');
+  h.className = 'heart';
+  h.textContent = ['\u2764','\u2665','\u2728','\u2764'][Math.floor(Math.random()*4)];
+  h.style.left = Math.random()*100 + 'vw';
+  h.style.fontSize = (14 + Math.random()*22) + 'px';
+  h.style.animationDuration = (7 + Math.random()*7) + 's';
+  h.style.animationDelay = (-Math.random()*10) + 's';
+  heartsBox.appendChild(h);
+  setTimeout(() => h.remove(), 18000);
+}
+for (let i = 0; i < 16; i++) makeHeart();
+setInterval(makeHeart, 1800);
+function burst() {
+  const r = goButton.getBoundingClientRect();
+  const cx = r.left + r.width/2, cy = r.top + r.height/2;
+  for (let i = 0; i < 18; i++) {
+    const s = document.createElement('span');
+    s.className = 'burst-heart';
+    s.textContent = '\u2764';
+    s.style.left = cx + 'px'; s.style.top = cy + 'px';
+    s.style.setProperty('--dx', (Math.random()*220-110) + 'px');
+    s.style.setProperty('--dy', (-40 - Math.random()*160) + 'px');
+    s.style.color = ['#ff5e8a','#d6336c','#9d4edd','#ff8fa3'][i%4];
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 1100);
+  }
+}
+function reveal() {
+  message.textContent = 'i love you babygirl';
+  message.classList.add('show');
+  forever.classList.add('show');
+  notes.classList.add('show');
+  againButton.classList.add('show');
+  goButton.style.display = 'none';
+  burst();
+}
+goButton.addEventListener('click', reveal);
+againButton.addEventListener('click', () => {
+  message.classList.remove('show');
+  forever.classList.remove('show');
+  notes.classList.remove('show');
+  againButton.classList.remove('show');
+  void message.offsetWidth;
+  reveal();
+});
+</script>
 </body>
 </html>
